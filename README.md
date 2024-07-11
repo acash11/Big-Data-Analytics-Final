@@ -5,3 +5,6 @@ Libraries Used:
 rbloom - https://github.com/KenanHanke/rbloom 
 A fast bloom fliter implemented in Rust that works for any hashable object
 
+numpy
+
+matplotlib

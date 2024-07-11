@@ -1,3 +1,7 @@
+#The rbloom library I found on GitHub
+#Implementation within the paper is different than what is here;
+#Leaving it for reference sake, however it will likely not be used
+
 #pip install rbloom
 from rbloom import Bloom
 bf = Bloom(200, 0.01)  # 200 items max, false positive rate of 1%
