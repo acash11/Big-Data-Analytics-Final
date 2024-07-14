@@ -1,19 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import time
-
-def create_random_sine_data(noise_factor, points_generated):
-    # Create 100 random X values from 0 to 6pi
-    x_values = np.linspace(0, 6 * np.pi, points_generated)
-
-    # Compute the corresponding y-values using the sine function
-    y_values = np.sin(x_values)
-
-    # Introduce some variation (e.g., a small random noise)
-    y_values += np.random.uniform(-noise_factor, noise_factor, y_values.shape)
-
-    #Return a numpy array of pairs
-    return np.dstack((x_values, y_values))
+import create_data
 
 def bf_similarity_join(query_set, sets, threshold, sliding_win_size) -> list:
 
@@ -76,8 +64,8 @@ if __name__ == '__main__':
     #Creates 2 sets of random values to perform a similarity join on.
     #Values are 2D points
     #Index [0] is necessary to unpack the array surrounding the list of data
-    set1 = [coord for coord in create_random_sine_data(noise_factor, points_generated)][0]
-    set2 = [coord for coord in create_random_sine_data(noise_factor, points_generated)][0]
+    set1 = [coord for coord in create_data.create_random_sine_data(noise_factor, points_generated)][0]
+    set2 = [coord for coord in create_data.create_random_sine_data(noise_factor, points_generated)][0]
 
     #Start timer for evaluation
     start = time.time()
@@ -102,13 +90,13 @@ if __name__ == '__main__':
 
     # Plot similar pairs
     for pair in result:
-        print("pair: ", pair)
+        #print("pair: ", pair)
         i = 0
         for subseq in pair:
             if i == 0: col = 'green'
             else: col = "pink"
             for p in subseq:
-                print(f"{col} point:", p)
+                #print(f"{col} point:", p)
                 plt.scatter(p[0], p[1], c=col)
             i = 1
 
