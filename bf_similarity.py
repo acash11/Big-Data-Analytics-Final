@@ -51,7 +51,7 @@ if __name__ == '__main__':
     threshold = 0.5
 
     #Amount of data points to be generated
-    points_generated = 500
+    points_generated = 200
 
     #Noise factor for data
     noise_factor = 0.5

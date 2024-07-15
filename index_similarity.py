@@ -23,21 +23,21 @@ def index_similarity_join(qset, bptrees, threshold, sw_size):
         #Get first point in qset
         qset_index = 0
         for point in qset:
-            print(point)
+            #print(point)
             in_range = bptree.range_query(point[0] - threshold, point[0] + threshold)
-            print(in_range)
+            #print(in_range)
             for p in in_range:
                 #print("p", p, "point", point)
                 if math.dist(p, point) <= threshold:
                     candidate_offsets.append(p)
-            print(candidate_offsets, len(candidate_offsets))
+            #print(candidate_offsets, len(candidate_offsets))
             
             for c in candidate_offsets:
-                print(c)
+                #print(c)
                 node = bptree.find(c[0])
-                print("keys", node.keys)
+                #print("keys", node.keys)
                 offset = node.keys.index(c[0])
-                print(offset)
+                #print(offset)
                 sw = []
                 for i in range(0, sw_size):
                     if offset < len(node.keys):
@@ -53,11 +53,12 @@ def index_similarity_join(qset, bptrees, threshold, sw_size):
                         y = node.values[offset]
                         sw.append((x, y))
                         offset += 1
-                print(sw)
+                #print(sw)
                 qset_sw = qset[qset_index: qset_index + sw_size]
 
                 distance = np.sqrt(np.sum((sw - qset_sw) ** 2))
                 if distance <= threshold:
+                    
                     answer.append((tuple(sw), tuple(qset_sw)))
                 
             
@@ -102,7 +103,7 @@ if __name__ == '__main__':
     
     fill_bplustree(bplustree, set2Keys, set2Values)
 
-    bplustree.show()
+    #bplustree.show()
 
     #bplustree.range_query(start, end)
 
