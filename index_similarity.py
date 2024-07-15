@@ -2,6 +2,7 @@ import create_data
 import time
 import numpy as np
 import matplotlib.pyplot as plt
+import math
 
 import bplustree
 
@@ -10,6 +11,64 @@ def fill_bplustree(bptree, keys, values):
 
     for i in range(0, len(keys)):
         bptree.insert(keys[i], values[i])
+    return
+
+def index_similarity_join(qset, bptrees, threshold, sw_size):
+    assert len(bptrees) > 0
+
+    answer = []
+
+    candidate_offsets = []
+    for bptree in bptrees:
+        #Get first point in qset
+        qset_index = 0
+        for point in qset:
+            print(point)
+            in_range = bptree.range_query(point[0] - threshold, point[0] + threshold)
+            print(in_range)
+            for p in in_range:
+                #print("p", p, "point", point)
+                if math.dist(p, point) <= threshold:
+                    candidate_offsets.append(p)
+            print(candidate_offsets, len(candidate_offsets))
+            
+            for c in candidate_offsets:
+                print(c)
+                node = bptree.find(c[0])
+                print("keys", node.keys)
+                offset = node.keys.index(c[0])
+                print(offset)
+                sw = []
+                for i in range(0, sw_size):
+                    if offset < len(node.keys):
+                        x = node.keys[offset]
+                        y = node.values[offset]
+                        sw.append((x, y))
+                        offset += 1
+                    else:
+                        if node.next == None: return answer
+                        node = node.next
+                        offset = 0
+                        x = node.keys[offset]
+                        y = node.values[offset]
+                        sw.append((x, y))
+                        offset += 1
+                print(sw)
+                qset_sw = qset[qset_index: qset_index + sw_size]
+
+                distance = np.sqrt(np.sum((sw - qset_sw) ** 2))
+                if distance <= threshold:
+                    answer.append((tuple(sw), tuple(qset_sw)))
+                
+            
+            qset_index += 1
+            
+    return answer
+
+            
+        #Perform a range search on that point to see if its elibigle for sliding window
+        #If yes, incrementally test sequence. If sum of sequence is less than theshold, add it to answer
+        #If no, move on to the next point in qset, until you reach pass point len(qset)-sw_size
 
 if __name__ == '__main__':
 
@@ -19,7 +78,7 @@ if __name__ == '__main__':
     threshold = 0.5
 
     #Amount of data points to be generated
-    points_generated = 500
+    points_generated = 200
 
     #Noise factor for data
     noise_factor = 0.5
@@ -33,6 +92,7 @@ if __name__ == '__main__':
     #Values are 2D points
     #Index [0] is necessary to unpack the array surrounding the list of data
     set1 = [coord for coord in create_data.create_random_sine_data(noise_factor, points_generated)][0]
+    
     set2 = [coord for coord in create_data.create_random_sine_data(noise_factor, points_generated)][0]
 
 
@@ -50,7 +110,7 @@ if __name__ == '__main__':
     start = time.time()
 
     #Perform function on static series
-    result = bf_similarity_join(set1, [set2], threshold, sw_size)  
+    result = index_similarity_join(set1, [bplustree], threshold, sw_size)  
 
 
     #Print pairs; For testing
